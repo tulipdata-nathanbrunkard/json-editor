@@ -447,6 +447,10 @@ export class SchemaLoader {
         if (typeof response === 'undefined') throw new Error(`Failed to fetch ref via ajax - ${uri}`)
         try {
           externalSchema = JSON.parse(response.responseText)
+          //Intercept schema json before caching 
+          if (typeof this.options.ajax_intercept === 'function') {
+            externalSchema = await this.options.ajax_intercept(externalSchema)
+          }
           if (this.options.ajax_cache_responses) {
             this.cacheSet(url, externalSchema)
           }
